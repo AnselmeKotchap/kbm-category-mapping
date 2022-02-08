@@ -46,6 +46,9 @@ function App(props) {
   const [checkedItems, setCheckedItems] = useState([]);
   const [mappings, setMappings] = useState([]);
 
+  const agent_name = localStorage.getItem("agentName");
+  const username = localStorage.getItem("username");
+
   const handleMapResult = (rootpath) => {
     const mapping = {
       articleIds: checkedItems,
@@ -57,19 +60,19 @@ function App(props) {
 
       if (map.length) {
         localForage.setItem("mappings", map).then(() => {
-          alert("Mapping Completed");
+          alert("Mapping des catégories achevée");
         });
         localForage.setItem("articleIds", checkedItems).then(() => {
-          console.log(checkedItems);
+          // console.log(checkedItems);
         });
         localForage.setItem("rootPath", rootpath).then(() => {
-          console.log(rootpath);
+          // console.log(rootpath);
         });
       }
       return map;
     });
   };
-  console.log(mappings);
+  // console.log(mappings);
 
   return (
     <div className="App">
@@ -81,20 +84,44 @@ function App(props) {
         >
           <img src={kbm} alt="Logo" />
         </div>
-        <TextField
-          id="input-with-icon-textfield"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="end">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          style={{
-            width: "50vw",
-          }}
-        />
+        <div>
+          <Typography
+            style={{
+              borderBottom: "1px solid grey",
+              display: "flex",
+              flexDirection: "row",
+              padding: "10px",
+              fontWeight: "700",
+              textAlign: "center",
+            }}
+          >
+            Mapping des catégories par:
+            <Typography
+              style={{ color: "purple", fontWeight: "700", marginLeft: "3px" }}
+            >
+              {agent_name}
+            </Typography>
+          </Typography>
+          <Typography
+            style={{
+              borderBottom: "1px solid grey",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              padding: "10px",
+              fontWeight: "700",
+              marginBottom: "1em",
+              marginRight: "2px",
+            }}
+          >
+            Pour :
+            <Typography
+              style={{ color: "purple", fontWeight: "700", marginLeft: "3px" }}
+            >
+              {username}
+            </Typography>
+          </Typography>
+        </div>
         <div
           style={{
             margin: "auto",
@@ -131,7 +158,7 @@ function App(props) {
             marginLeft: "7vw",
           }}
         >
-          <MappingResult />
+          <MappingResult mappings={mappings} setMappings={setMappings} />
         </div>
       </div>
       <div>
@@ -163,8 +190,9 @@ function App(props) {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  localStorage.setItem("Auth", false);
-                  <Link to="/login" />;
+                  localStorage.removeItem("Auth");
+                  window.location.reload();
+                  localForage.clear();
                 }}
               >
                 Logout

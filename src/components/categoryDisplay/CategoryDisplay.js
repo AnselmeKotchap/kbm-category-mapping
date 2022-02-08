@@ -4,14 +4,21 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import * as localForage from "localforage";
-import { Checkbox, FormControlLabel, Typography } from "@mui/material";
-import { CheckBox } from "@mui/icons-material";
+import {
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { CheckBox, Search } from "@mui/icons-material";
 
 const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
   const [collection, setCollection] = useState({});
   const [subCollection, setSubCollection] = useState({});
   const [allArticles, setAllArticles] = useState([]);
   const [allCollections, setAllCollections] = useState([]);
+  const [results, setResults] = useState([]);
 
   //Assign Checked Articles
 
@@ -23,7 +30,15 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
 
     setCheckedItems((prev) => [...prev, id]);
   };
-  console.log(checkedItems);
+
+  const handleSearch = (e) => {
+    let name = e.target.value;
+    const result = allArticles?.filter((item, index) =>
+      item.name.includes(name)
+    );
+    setResults(result);
+    return results;
+  };
   // const articleList = allArticles?.map((item, index) => {
   //   if(item.collectionID === subCollection.id){
   //     return <div
@@ -195,35 +210,80 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                 scrollBehavior: "smooth",
               }}
             >
-              {allArticles.map((item, index) => {
-                if (item.collectionID === subCollection.id) {
-                  return (
-                    <FormControlLabel
-                      key={index}
-                      style={{
-                        textTransform: "capitalize",
-                        paddingLeft: "5px",
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        height: "auto",
-                        width: "auto",
-                      }}
-                      control={
-                        <Checkbox
+              <TextField
+                onChange={handleSearch}
+                id="input-with-icon-textfield"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="end">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                }}
+                variant="outlined"
+                style={{
+                  width: "50vw",
+                }}
+              />
+              {results?.length
+                ? results?.map((item, index) => {
+                    if (item.collectionID === subCollection.id) {
+                      return (
+                        <FormControlLabel
                           key={index}
-                          checked={checkedItems.includes(item.id)}
-                          onChange={() => handleCheckbox(item.id)}
-                          name={item.id}
-                          inputProps={{ "aria-label": item?.name }}
+                          style={{
+                            textTransform: "capitalize",
+                            paddingLeft: "5px",
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            height: "auto",
+                            width: "auto",
+                          }}
+                          control={
+                            <Checkbox
+                              key={index}
+                              checked={checkedItems.includes(item.id)}
+                              onChange={() => handleCheckbox(item.id)}
+                              name={item.id}
+                              inputProps={{ "aria-label": item?.name }}
+                            />
+                          }
+                          label={item?.name}
                         />
-                      }
-                      label={item?.name}
-                    />
-                  );
-                }
-              })}
+                      );
+                    }
+                  })
+                : allArticles?.map((item, index) => {
+                    if (item.collectionID === subCollection?.id) {
+                      return (
+                        <FormControlLabel
+                          key={index}
+                          style={{
+                            textTransform: "capitalize",
+                            paddingLeft: "5px",
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            height: "auto",
+                            width: "auto",
+                          }}
+                          control={
+                            <Checkbox
+                              key={index}
+                              checked={checkedItems.includes(item?.id)}
+                              onChange={() => handleCheckbox(item?.id)}
+                              name={item?.id}
+                              inputProps={{ "aria-label": item?.name }}
+                            />
+                          }
+                          label={item?.name}
+                        />
+                      );
+                    }
+                  })}
             </div>
           </div>
         )}

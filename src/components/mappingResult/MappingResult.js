@@ -1,10 +1,10 @@
 import { Button, Modal, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import * as localForage from "localforage";
-import axiosSend from "../../api/axiosSend";
 import axios from "axios";
-import { Box, height } from "@mui/system";
+import { Box } from "@mui/system";
 import kbm from "../../kbm.svg";
+import loading from "../../Loading_Animation.gif";
 
 const style = {
   position: "absolute",
@@ -26,8 +26,8 @@ const style = {
   direction: "rtl",
 };
 
-function MappingResult(props) {
-  const [mapToSend, setMapToSend] = useState([]);
+function MappingResult({ mappings, setMappings }) {
+  const [mapToSend, setMapToSend] = useState(mappings || []);
   const [username, setUsername] = useState("");
   const [agentName, setAgentName] = useState("");
   const [finalData, setFinalData] = useState({});
@@ -38,6 +38,9 @@ function MappingResult(props) {
   const [mapIndex, setMapIndex] = useState(null);
 
   const [open, setOpen] = useState(false);
+  const [openSend, setOpenSend] = useState(false);
+  const LOGIN_URL =
+    "https://3fm2fdckrl.execute-api.us-east-2.amazonaws.com/collection_mapping";
 
   const handleOpen = (item, index) => {
     const aIDs = item.articleIds;
@@ -60,69 +63,111 @@ function MappingResult(props) {
   };
 
   const handleDeleteMapping = () => {
-    setMapToSend((prev) => prev.splice(mapIndex, 1));
-
-    localForage.setItem("mappings", mapToSend).then(() => {
-      alert("Articles has been removed");
+    setMapToSend((prev) => {
+      prev.splice(mapIndex, 1);
+      localForage.setItem("mappings", prev).then(() => {
+        alert("Articles has been removed");
+      });
+      return [...prev];
     });
+
     handleClose();
 
     return mapToSend;
   };
 
-  setInterval(function () {
-    localForage.getItem("mappings", function (err, value) {
-      if (!err) {
-        setMapToSend(value);
-      }
-      console.log("Gotten", err);
-    });
-  }, 10000);
+  const getDataOnLoad = async () => {
+    const articles = await localForage.getItem("articles");
+    const un = localStorage.getItem("username");
+    const an = localStorage.getItem("agentName");
+
+    const map = await localForage.getItem("mappings");
+    if (map?.length) {
+      setMapToSend(map);
+      setUsername(un);
+      setAgentName(an);
+      setFinalData({
+        agent_name: an,
+        username: un,
+        mappings: map,
+      });
+
+      return finalData;
+    }
+
+    if (articles?.length) {
+      setAllArticles(articles);
+      return finalData;
+    }
+  };
+  console.log(finalData);
 
   useEffect(() => {
-    localForage.getItem("articles", function (err, value) {
-      setAllArticles(value);
-      console.log(err);
-    });
-    localForage.getItem("mappings", function (err, value) {
-      if (!err) {
-        const un = localStorage.getItem("username");
-        const an = localStorage.getItem("agentName");
-        setMapToSend(value);
-        setUsername(un);
-        setAgentName(an);
-        setFinalData({
-          agent_name: an,
-          username: un,
-          mappings: value,
-        });
-      }
-      console.log("adasdfs", err);
-    });
-  }, []);
+    if (mappings?.length) {
+      getDataOnLoad();
+    } else {
+      setMapToSend(mappings);
+    }
+  }, [mappings]);
+
   console.log(finalData);
 
   const handleSend = async (e) => {
     e.preventDefault();
-
     try {
       if (Object.keys(finalData).length) {
+        setOpenSend(true);
         const response = await axios({
           method: "post",
           url: "https://t9iijqdfyf.execute-api.us-east-2.amazonaws.com/prod",
           data: finalData,
         });
+        console.log(finalData);
 
         console.log(response);
         if (response.status === 200) {
           alert("Mappings Sent");
+          setOpenSend(false);
+          localForage.clear();
+          try {
+            const response = await axios({
+              method: "post",
+              url: LOGIN_URL,
+              data: {
+                agent_name: localStorage.getItem("agentName"),
+                username: localStorage.getItem("username"),
+              },
+            });
+            console.log(response);
+            if (response.status === 200) {
+              localForage
+                .setItem("articles", response.data.articles)
+                .then(() => {
+                  // console.log("Articles have been Saved");
+                });
+              localForage
+                .setItem("collections", response.data.collections)
+                .then(() => {});
+              window.location.reload();
+            }
+          } catch (err) {
+            alert("La connexion a échoué. Veuillez réessayer");
+            localStorage.removeItem("Auth");
+            setOpenSend(false);
+            window.location.reload();
+            console.log(err);
+          }
+          setOpenSend(false);
         }
       } else {
         alert("Data is empty");
         console.log(finalData);
+        setOpenSend(false);
       }
     } catch (err) {
-      alert("Error is", JSON.stringify(err));
+      alert("Mapping Error Please Retry");
+      setOpenSend(false);
+
       console.log(err);
     }
   };
@@ -279,6 +324,43 @@ function MappingResult(props) {
               </Box>
             </Modal>
           </div>
+          <div>
+            <Modal
+              open={openSend}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <div
+                  style={{
+                    margin: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "space-around",
+                    height: "80%",
+                    width: "50%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={kbm}
+                    alt="Logo"
+                    style={{
+                      marginBottom: "30px",
+                    }}
+                  />
+                  <img
+                    src={loading}
+                    alt="Logo"
+                    style={{
+                      marginBottom: "30px",
+                    }}
+                  />
+                </div>
+              </Box>
+            </Modal>
+          </div>{" "}
         </div>
         <div
           style={{

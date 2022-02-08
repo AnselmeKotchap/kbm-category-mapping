@@ -75,16 +75,15 @@ export default function Login() {
         localStorage.setItem("agentName", agent_name);
         window.location.reload();
         localForage.setItem("articles", response.data.articles).then(() => {
-          console.log("Articles have been Saved");
+          // console.log("Articles have been Saved");
         });
         localForage
           .setItem("collections", response.data.collections)
-          .then(() => {
-            console.log("Collections have been Saved");
-          });
+          .then(() => {});
       }
     } catch (err) {
-      alert("Error is");
+      alert("La connexion a échoué. Veuillez réessayer");
+      setOpen(false);
       console.log(err);
     }
   };
@@ -178,7 +177,7 @@ export default function Login() {
             type="submit"
             onClick={handleSubmit}
           >
-            Login
+            Connexion
           </Button>
         </form>
         <Typography
