@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { CheckBox, Search } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
 
 const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
   const [collection, setCollection] = useState({});
@@ -137,6 +137,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                       </MenuItem>
                     );
                   }
+                  return null;
                 })}
           </Select>
         </FormControl>
@@ -176,6 +177,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                         </MenuItem>
                       );
                     }
+                    return null;
                   })}
             </Select>
           </FormControl>
@@ -254,6 +256,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                         />
                       );
                     }
+                    return null;
                   })
                 : allArticles?.map((item, index) => {
                     if (item.collectionID === subCollection?.id) {
@@ -283,6 +286,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                         />
                       );
                     }
+                    return null;
                   })}
             </div>
           </div>

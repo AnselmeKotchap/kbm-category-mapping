@@ -28,8 +28,8 @@ const style = {
 
 function MappingResult({ mappings, setMappings }) {
   const [mapToSend, setMapToSend] = useState(mappings || []);
-  const [username, setUsername] = useState("");
-  const [agentName, setAgentName] = useState("");
+  const [, setUsername] = useState("");
+  const [, setAgentName] = useState("");
   const [finalData, setFinalData] = useState({});
   const [allArticles, setAllArticles] = useState([]);
   const [articleID, setArticleID] = useState([]);
@@ -51,11 +51,12 @@ function MappingResult({ mappings, setMappings }) {
       if (aIDs.includes(i.id)) {
         setMappedArticles((prev) => [...prev, i.name]);
       }
+      return null;
     });
     setRootPath(JSON.stringify(item.rootPath));
     setOpen(true);
     setMapIndex(index);
-    return mappedArticles, rootPath, mapIndex;
+    // return mappedArticles, rootPath, mapIndex;
   };
   const handleClose = () => {
     setOpen(false);
@@ -100,6 +101,7 @@ function MappingResult({ mappings, setMappings }) {
       return finalData;
     }
   };
+
   console.log(finalData);
 
   useEffect(() => {

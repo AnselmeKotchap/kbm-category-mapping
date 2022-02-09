@@ -1,20 +1,11 @@
-import { Link, Outlet, Route, Routes } from "react-router-dom";
-import {
-  TextField,
-  InputAdornment,
-  Button,
-  Modal,
-  Typography,
-} from "@mui/material";
-import { Search, AccountBox, Logout } from "@mui/icons-material";
+import { Button, Modal, Typography } from "@mui/material";
+import { AccountBox } from "@mui/icons-material";
 import kbm from "./kbm.svg";
 import "./App.css";
-import Data from "./data/categoryData";
 import CategoryDisplay from "./components/categoryDisplay/CategoryDisplay";
 import NewCategoryDisplay from "./components/newCategoryDisplay/NewCategoryDisplay";
 import MappingResult from "./components/mappingResult/MappingResult";
-import Login from "./routes/Login";
-import NotFound from "./routes/NotFound";
+
 import React, { useState } from "react";
 import { Box } from "@mui/system";
 import * as localForage from "localforage";

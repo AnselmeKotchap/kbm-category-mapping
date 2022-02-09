@@ -14,13 +14,6 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
   const [fourthSubCollection, setFourthSubCollection] = useState({});
   const [rootPath, setRootPath] = useState([]);
 
-  let initialRootPath = [
-    collection,
-    subCollection,
-    thirdSubCollection,
-    Object.keys(fourthSubCollection).length === 0 ? null : fourthSubCollection,
-  ];
-
   const handleCollectionChange = (event) => {
     setCollection(event.target.value);
     setRootPath([event.target.value.name]);
