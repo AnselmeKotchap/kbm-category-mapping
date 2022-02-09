@@ -8,12 +8,6 @@ import * as localForage from "localforage";
 const LOGIN_URL = "/collection_mapping";
 
 export default function Login() {
-  const initialFormData = {
-    agent_name: "",
-    username: "",
-    data: [],
-  };
-
   const style = {
     position: "absolute",
     top: "50%",
@@ -35,14 +29,12 @@ export default function Login() {
   };
 
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [formData, updateFormData] = useState(initialFormData);
-  const [articles, setArticles] = useState();
+  const [articles] = useState();
   const [username, setUserName] = useState();
   const [agent_name, setAgentName] = useState();
-  const [secret, setSecret] = useState();
+  const [, setSecret] = useState();
 
   const handleUChange = (e) => {
     setUserName(e.target.value);
