@@ -97,12 +97,21 @@ function MappingResult({ mappings, setMappings }) {
       setAllArticles(articles);
     }
   };
-
+// initialize mapping to usestate on load
   useEffect(() => {
-    if (!mappings?.length) {
+    if (!mappings?.length) { 
       getDataOnLoad();
     } else {
+      const un = localStorage.getItem("username");
+      const an = localStorage.getItem("agentName");
       setMapToSend(mappings);
+      setUsername(un);
+      setAgentName(an);
+      setFinalData({
+        agent_name: an,
+        username: un,
+        mappings,
+      });
     }
   }, [mappings]);
 console.log(finalData)

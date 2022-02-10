@@ -194,10 +194,10 @@ function App(props) {
               />
               <Button
                 variant="outlined"
-                onClick={() => {
+                onClick={async () => {
                   localStorage.removeItem("Auth");
+                  await localForage.clear();
                   window.location.reload();
-                  localForage.clear();
                 }}
               >
                 Logout

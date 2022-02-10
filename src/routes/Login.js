@@ -31,7 +31,6 @@ export default function Login() {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
-  const [articles] = useState();
   const [username, setUserName] = useState();
   const [agent_name, setAgentName] = useState();
   const [, setSecret] = useState();
@@ -58,29 +57,25 @@ export default function Login() {
           // headers: { "Content-Type": "application/json", mode: "cors" },
         }
       );
-      console.log(response);
+      console.log(response, 'response from server');
       if (response.status === 200) {
-        console.log(response.articles);
-        console.log(agent_name, username);
         localStorage.setItem("Auth", true);
         localStorage.setItem("username", username);
         localStorage.setItem("agentName", agent_name);
-        window.location.reload();
         localForage.setItem("articles", response.data.articles).then(() => {
           // console.log("Articles have been Saved");
         });
         localForage
-          .setItem("collections", response.data.collections)
-          .then(() => {});
+        .setItem("collections", response.data.collections)
+        .then(() => {});
       }
+      window.location.reload();
     } catch (err) {
       alert("La connexion a échoué. Veuillez réessayer");
       setOpen(false);
       console.log(err);
     }
   };
-
-  console.log(articles);
 
   return (
     <div

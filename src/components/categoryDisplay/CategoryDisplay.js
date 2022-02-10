@@ -95,6 +95,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
         height: "80vh",
         minHeight: "400px",
         border: "1px solid grey",
+        backgroundColor: '#00000010',
         borderRadius: "1%",
         borderBottomRightRadius: "15%",
         // marginTop: "1em",
@@ -107,12 +108,13 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
           padding: "10px",
           fontWeight: "700",
           marginBottom: "1em",
+          backgroundColor: '#fff',
         }}
       >
         Old Collections
       </div>
       <div>
-        <FormControl style={{ width: "85%", marginBottom: "1em" }}>
+        <FormControl style={{ width: "85%", marginBottom: "1em", backgroundColor: '#fff', }}>
           <InputLabel id="demo-simple-select-label">Collections</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -124,7 +126,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
               textTransform: "capitalize",
             }}
           >
-            {!allCollections.length? null
+            {!allCollections?.length? null
               : allCollections?.map((item, index) => {
                   if (item?.type === "collection") {
                     return (
@@ -145,7 +147,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
         </FormControl>
         {Object.keys(collection)?.length === 0 ? (
           null) : (
-          <FormControl style={{ width: "85%", marginBottom: "1em" }}>
+          <FormControl style={{ width: "85%", marginBottom: "1em", backgroundColor: '#fff', }}>
             <InputLabel id="demo-simple-select-label">
               Sub Collections
             </InputLabel>
@@ -188,6 +190,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
             style={{
               width: "100%",
               height: "5vh",
+              // backgroundColor: '#fff',
             }}
           >
             <Typography
@@ -211,6 +214,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                 overflowX: "hidden",
                 overflowY: "scroll",
                 scrollBehavior: "smooth",
+                backgroundColor: '#fff',
               }}
             >
               <TextField
@@ -226,6 +230,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                 variant="outlined"
                 style={{
                   width: "50vw",
+                  backgroundColor: '#fff',
                 }}
               />
               {results?.length
@@ -242,7 +247,8 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                             alignItems: "center",
                             justifyContent: "flex-start",
                             height: "auto",
-                            width: "auto",
+                            width: "100%",
+                            backgroundColor: '#fff',
                           }}
                           control={
                             <Checkbox
@@ -272,7 +278,8 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                             alignItems: "center",
                             justifyContent: "flex-start",
                             height: "auto",
-                            width: "auto",
+                            width: "100%",
+                            backgroundColor: '#fff',
                           }}
                           control={
                             <Checkbox
