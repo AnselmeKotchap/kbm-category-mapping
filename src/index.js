@@ -18,13 +18,13 @@ render(
     {/* <Provider store={store}> */}
     <Routes>
       <Route
-        path="/"
+        path="/kbm-category-mapping"
         element={
           authenticated(localStorage.getItem("Auth")) ? <App /> : <Login />
         }
       />
       <Route path="*" element={<NotFound />} />
-      <Route path="login" element={<Login />} />
+      {/* <Route path="login" element={<Login />} /> */}
     </Routes>
     {/* </Provider> */}
   </BrowserRouter>,
