@@ -64,6 +64,19 @@ function App(props) {
       return map;
     });
   };
+
+  const getDataOnLoad = async () => {
+    const map = await localForage.getItem("mappings");
+    if (map?.length) {
+      setMappings(map);
+    }
+  };
+
+  React.useEffect(() => {
+    if (!mappings?.length) {
+      getDataOnLoad();
+    } 
+  }, [mappings]);
   // console.log(mappings);
 
   return (

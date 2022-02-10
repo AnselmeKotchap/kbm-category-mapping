@@ -378,7 +378,7 @@ export const catergoryData = [
     ],
   },
   {
-    name: "Eyewear",
+    name: "Sunglasses & Eyewear Accessories",
     level: 2,
     rootPath: ["Fashion & Jewellery", "Women"],
     criteria: [],
