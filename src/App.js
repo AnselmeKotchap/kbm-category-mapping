@@ -40,10 +40,11 @@ function App(props) {
   const agent_name = localStorage.getItem("agentName");
   const username = localStorage.getItem("username");
 
-  const handleMapResult = (rootpath) => {
+  const handleMapResult = (rootpath, criterias) => {
     const mapping = {
       articleIds: checkedItems,
       rootPath: rootpath,
+      criterias
     };
 
     setMappings((prev) => {
@@ -142,7 +143,7 @@ function App(props) {
           />
         </div>
         <div>
-          <NewCategoryDisplay handleMapResult={handleMapResult} />
+          <NewCategoryDisplay handleMapResult={handleMapResult} checkedItems={checkedItems}/>
         </div>
         <div
           style={{

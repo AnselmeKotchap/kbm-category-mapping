@@ -37,6 +37,8 @@ function MappingResult({ mappings, setMappings }) {
   const [rootPath, setRootPath] = useState([]);
   const [mapIndex, setMapIndex] = useState(null);
 
+  const [criteria, setCriteria] = useState([])
+
   const [open, setOpen] = useState(false);
   const [openSend, setOpenSend] = useState(false);
   const LOGIN_URL =
@@ -45,13 +47,11 @@ function MappingResult({ mappings, setMappings }) {
   const handleOpen = (item, index) => {
     const aIDs = item.articleIds;
     setArticleID(aIDs);
-    console.log(articleID);
-
-    allArticles?.map((i) => {
+    setCriteria(item.criterias?.map(item => item.name))
+    allArticles?.forEach((i) => {
       if (aIDs.includes(i.id)) {
         setMappedArticles((prev) => [...prev, i.name]);
       }
-      return null;
     });
     setRootPath(JSON.stringify(item.rootPath));
     setOpen(true);
@@ -81,7 +81,6 @@ function MappingResult({ mappings, setMappings }) {
     const articles = await localForage.getItem("articles");
     const un = localStorage.getItem("username");
     const an = localStorage.getItem("agentName");
-
     const map = await localForage.getItem("mappings");
     if (map?.length) {
       setMapToSend(map);
@@ -92,27 +91,21 @@ function MappingResult({ mappings, setMappings }) {
         username: un,
         mappings: map,
       });
-
-      return finalData;
     }
 
     if (articles?.length) {
       setAllArticles(articles);
-      return finalData;
     }
   };
 
-  console.log(finalData);
-
   useEffect(() => {
-    if (mappings?.length) {
+    if (!mappings?.length) {
       getDataOnLoad();
     } else {
       setMapToSend(mappings);
     }
   }, [mappings]);
-
-  console.log(finalData);
+console.log(finalData)
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -202,7 +195,7 @@ function MappingResult({ mappings, setMappings }) {
       <div>
         <div>
           {mapToSend?.map((item, index) =>
-            Object.keys(item).length ? (
+            Object.keys(item)?.length ? (
               <Button
                 key={index}
                 variant="outlined"
@@ -301,6 +294,38 @@ function MappingResult({ mappings, setMappings }) {
                       ))}
                     </ol>
                   </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography
+                      style={{
+                        textTransform: "uppercase",
+                        textAlign: "center",
+                        textDecoration: "underline",
+                        marginTop: "2em",
+                      }}
+                    >
+                      Criteria
+                    </Typography>
+                    <ol>
+                      {criteria?.map((item, index) => (
+                        <li
+                          key={index}
+                          style={{
+                            textTransform: "capitalize",
+                            marginBottom: "1em",
+                          }}
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+
                   <div
                     style={{
                       width: "100%",
@@ -369,9 +394,9 @@ function MappingResult({ mappings, setMappings }) {
             marginTop: "3em",
           }}
         >
-          <Button variant="contained" onClick={handleSend}>
+          {mapToSend?.length ? <Button variant="contained" onClick={handleSend}>
             Send
-          </Button>
+          </Button> : null}
         </div>
       </div>
     </div>

@@ -79,9 +79,12 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
 
   const handleCollectionChange = (event) => {
     setCollection(event.target.value);
+    setSubCollection({})
+    setCheckedItems([])
   };
   const handleSubCollectionChange = (event) => {
     setSubCollection(event.target.value);
+    setCheckedItems([])
   };
 
   return (
@@ -121,8 +124,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
               textTransform: "capitalize",
             }}
           >
-            {Object.keys(allCollections)?.length === 0
-              ? () => setSubCollection({})
+            {!allCollections.length? null
               : allCollections?.map((item, index) => {
                   if (item?.type === "collection") {
                     return (
@@ -142,8 +144,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
           </Select>
         </FormControl>
         {Object.keys(collection)?.length === 0 ? (
-          () => setSubCollection({})
-        ) : (
+          null) : (
           <FormControl style={{ width: "85%", marginBottom: "1em" }}>
             <InputLabel id="demo-simple-select-label">
               Sub Collections
@@ -158,8 +159,8 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                 textTransform: "capitalize",
               }}
             >
-              {Object.keys(collection)?.length === 0
-                ? () => setSubCollection({})
+              {allCollections?.length === 0
+                ? null
                 : allCollections?.map((item, index) => {
                     if (
                       item?.type === "subCollection" &&

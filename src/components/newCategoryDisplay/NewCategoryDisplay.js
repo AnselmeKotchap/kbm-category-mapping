@@ -6,7 +6,7 @@ import Select from "@mui/material/Select";
 import { catergoryData } from "../../data/categoryData";
 import { Button } from "@mui/material";
 
-const NewCategoryDisplay = ({ handleMapResult }) => {
+const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
   const [collection, setCollection] = useState({});
   const [subCollection, setSubCollection] = useState({});
   const [secondSubCollection, setSecondSubCollection] = useState({});
@@ -17,21 +17,29 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
   const handleCollectionChange = (event) => {
     setCollection(event.target.value);
     setRootPath([event.target.value.name]);
+    setSubCollection({});
+    setSecondSubCollection({});
+    setThirdSubCollection({});
+    setFourthSubCollection({});
+
   };
   const handleSubCollectionChange = (event) => {
     setSubCollection(event.target.value);
     setRootPath((prev) => [prev[0], event.target.value.name]);
-    if (collection.level === 3) {
-      setThirdSubCollection({});
-    }
+    setSecondSubCollection({});
+    setThirdSubCollection({});
+    setFourthSubCollection({});
   };
   const handleSecondSubCollectionChange = (event) => {
     setSecondSubCollection(event.target.value);
     setRootPath((prev) => [prev[0], prev[1], event.target.value.name]);
+    setThirdSubCollection({});
+    setFourthSubCollection({});
   };
   const handleThirdSubCollectionChange = (event) => {
     setThirdSubCollection(event.target.value);
     setRootPath((prev) => [prev[0], prev[1], prev[2], event.target.value.name]);
+    setFourthSubCollection({});
   };
   const handleFourthSubCollectionChange = (event) => {
     setFourthSubCollection(event.target.value);
@@ -45,11 +53,23 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
   };
 
   const handleMap = () => {
-    if (rootPath.length >= 3) {
-      handleMapResult(rootPath);
+    if (rootPath.length === collection.level && checkedItems?.length) {
+      const foundValue = catergoryData.find(item => {
+        item.rootPath?.push(item.name)
+        return JSON.stringify(item.rootPath.map(a => a?.trim().toLocaleLowerCase())) === JSON.stringify(rootPath.map(a => a?.trim().toLocaleLowerCase()))
+        
+      })
+
+      if (!foundValue) {
+        alert("Not a correct rootpath combination")
+        return;
+      }
+
+      const criteria = foundValue.criteria.map(item => ({ ...item, value: '' }));
+      
+      handleMapResult(rootPath, criteria);
     } else alert("Make Sure all categories and subcategories are selected");
 
-    console.log(rootPath);
   };
 
   return (
@@ -116,7 +136,7 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
               }}
             >
               {catergoryData.map((item, index) =>
-                item.rootPath[0] === collection.name &&
+                item.rootPath[0]?.trim().toLocaleLowerCase() === collection.name?.trim().toLocaleLowerCase() &&
                 item.rootPath.length === 1 ? (
                   <MenuItem
                     key={index}
@@ -150,7 +170,8 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
               }}
             >
               {catergoryData.map((item, index) =>
-                item.rootPath[1] === subCollection.name &&
+                item.rootPath[0]?.trim().toLocaleLowerCase() === collection.name?.trim().toLocaleLowerCase() &&
+                item.rootPath[1]?.trim().toLocaleLowerCase() === subCollection.name?.trim().toLocaleLowerCase() &&
                 item.rootPath.length === 2 ? (
                   <MenuItem
                     key={index}
@@ -184,8 +205,10 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
                 textTransform: "capitalize",
               }}
             >
-              {catergoryData.map((item, index) =>
-                item.rootPath[2] === secondSubCollection.name &&
+                {catergoryData.map((item, index) =>
+                item.rootPath[0]?.trim().toLocaleLowerCase() === collection.name?.trim().toLocaleLowerCase() &&
+                item.rootPath[1]?.trim().toLocaleLowerCase() === subCollection.name?.trim().toLocaleLowerCase() &&
+                item.rootPath[2]?.trim().toLocaleLowerCase() === secondSubCollection.name?.trim().toLocaleLowerCase() &&
                 item.rootPath.length === 3 ? (
                   <MenuItem
                     key={index}
@@ -220,7 +243,7 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
               }}
             >
               {catergoryData.map((item, index) =>
-                item.rootPath[3] === thirdSubCollection.name &&
+                item.rootPath[3]?.trim().toLocaleLowerCase() === thirdSubCollection.name?.trim().toLocaleLowerCase() &&
                 item.rootPath.length === 3 ? (
                   <MenuItem
                     key={index}
@@ -238,7 +261,7 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
         )}
       </div>
       <div>
-        <Button
+      {collection?.level === rootPath.length ? <Button
           variant="contained"
           style={{
             width: "50%",
@@ -248,7 +271,7 @@ const NewCategoryDisplay = ({ handleMapResult }) => {
           onClick={handleMap}
         >
           Save Mapping
-        </Button>
+        </Button>: null}
       </div>
     </div>
   );
