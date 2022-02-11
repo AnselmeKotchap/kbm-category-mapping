@@ -59,17 +59,13 @@ export default function Login() {
       );
       console.log(response, 'response from server');
       if (response.status === 200) {
-        localStorage.setItem("Auth", true);
-        localStorage.setItem("username", username);
-        localStorage.setItem("agentName", agent_name);
-        localForage.setItem("articles", response.data.articles).then(() => {
-          // console.log("Articles have been Saved");
-        });
-        localForage
-        .setItem("collections", response.data.collections)
-        .then(() => {});
+        await localStorage.setItem("Auth", true);
+        await localStorage.setItem("username", username);
+        await localStorage.setItem("agentName", agent_name);
+        await localForage.setItem("articles", response.data.articles)
+        await localForage.setItem("collections", response.data.collections)
+        window.location.reload();
       }
-      window.location.reload();
     } catch (err) {
       alert("La connexion a échoué. Veuillez réessayer");
       setOpen(false);

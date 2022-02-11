@@ -69,11 +69,11 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
   useEffect(() => {
     localForage.getItem("articles", function (err, value) {
       setAllArticles(value);
-      console.log(err);
+      console.log(err, 'lakjlkasjdksd', value);
     });
     localForage.getItem("collections", function (err, value) {
       setAllCollections(value);
-      console.log(err);
+      console.log(err, 'sasdfaskdflasdklk', value);
     });
   }, []);
 
