@@ -5,6 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { catergoryData } from "../../data/categoryData";
 import { Button } from "@mui/material";
+import { catFR } from "../../data/catFR";
 
 const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
   const [collection, setCollection] = useState({});
@@ -13,6 +14,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
   const [thirdSubCollection, setThirdSubCollection] = useState({});
   const [fourthSubCollection, setFourthSubCollection] = useState({});
   const [rootPath, setRootPath] = useState([]);
+  const category = [...catergoryData]
 
   const handleCollectionChange = (event) => {
     setCollection(event.target.value);
@@ -54,11 +56,13 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
 
   const handleMap = () => {
     if (rootPath.length === collection.level && checkedItems?.length) {
-      const foundValue = catergoryData.find(item => {
+      
+      const foundValue = category.map(item => {
         item.rootPath?.push(item.name)
-        return JSON.stringify(item.rootPath.map(a => a?.trim().toLocaleLowerCase())) === JSON.stringify(rootPath.map(a => a?.trim().toLocaleLowerCase()))
+        return item
+      }).find(item => JSON.stringify(item.rootPath.map(a => a?.trim().toLocaleLowerCase())) === JSON.stringify(rootPath.map(a => a?.trim().toLocaleLowerCase()))
         
-      })
+      )
 
       if (!foundValue) {
         alert("Not a correct rootpath combination")
@@ -94,7 +98,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
           marginBottom: "1em",
         }}
       >
-        New Collections
+        Nouvelle Collections
       </div>
       <div>
         <FormControl style={{ width: "85%", marginBottom: "1em" }}>
@@ -111,8 +115,10 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
           >
             {catergoryData.map((item, index) =>
               item.rootPath.length === 0 ? (
-                <MenuItem key={index} value={item}>
-                  {item.name}
+                <MenuItem key={index} value={item} style={{
+                  textTransform: "capitalize",
+                }}>
+                  {catFR[item.name.toLowerCase()] || item.name}
                 </MenuItem>
               ) : null
             )}
@@ -123,7 +129,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
         ) : (
           <FormControl style={{ width: "85%", marginBottom: "1em" }}>
             <InputLabel id="demo-simple-select-label">
-              Sub Collections
+              Sous Collections
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -145,7 +151,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
                       textTransform: "capitalize",
                     }}
                   >
-                    {item.name}
+                     {catFR[item.name.toLowerCase()] || item.name}
                   </MenuItem>
                 ) : null
               )}
@@ -157,7 +163,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
         ) : (
           <FormControl style={{ width: "85%", marginBottom: "1em" }}>
             <InputLabel id="demo-simple-select-label">
-              2nd Sub Collections
+            2ème Sous Collections
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -180,7 +186,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
                       textTransform: "capitalize",
                     }}
                   >
-                    {item.name}
+                     {catFR[item.name.toLowerCase()] || item.name}
                   </MenuItem>
                 ) : null
               )}
@@ -193,7 +199,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
         ) : secondSubCollection.level === 1 ? null : (
           <FormControl style={{ width: "85%", marginBottom: "1em" }}>
             <InputLabel id="demo-simple-select-label">
-              3rd Sub Collections
+            3ème Sous Collections
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -217,7 +223,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
                       textTransform: "capitalize",
                     }}
                   >
-                    {item.name}
+                     {catFR[item.name.toLowerCase()] || item.name}
                   </MenuItem>
                 ) : null
               )}
@@ -230,7 +236,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
         ) : thirdSubCollection.level === 1 ? null : (
           <FormControl style={{ width: "85%", marginBottom: "1em" }}>
             <InputLabel id="demo-simple-select-label">
-              4th Sub Collections
+            4ème Sous Collections
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -252,7 +258,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
                       textTransform: "capitalize",
                     }}
                   >
-                    {item.name}
+                     {catFR[item.name.toLowerCase()] || item.name}
                   </MenuItem>
                 ) : null
               )}
@@ -270,7 +276,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
           type="submit"
           onClick={handleMap}
         >
-          Save Mapping
+          Sauvegarder
         </Button>: null}
       </div>
     </div>

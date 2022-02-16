@@ -5,6 +5,7 @@ import axios from "axios";
 import { Box } from "@mui/system";
 import kbm from "../../kbm.svg";
 import loading from "../../Loading_Animation.gif";
+import { catFR } from "../../data/catFR";
 
 const style = {
   position: "absolute",
@@ -34,7 +35,7 @@ function MappingResult({ mappings, setMappings }) {
   const [allArticles, setAllArticles] = useState([]);
   const [articleID, setArticleID] = useState([]);
   const [mappedArticles, setMappedArticles] = useState([]);
-  const [rootPath, setRootPath] = useState([]);
+  const [rootPath, setRootPath] = useState('[]');
   const [mapIndex, setMapIndex] = useState(null);
 
   const [criteria, setCriteria] = useState([])
@@ -199,7 +200,7 @@ console.log(finalData)
           marginBottom: "1em",
         }}
       >
-        Mapping Results
+        Résultats cartographie
       </div>
       <div>
         <div>
@@ -216,8 +217,8 @@ console.log(finalData)
                 }}
                 onClick={() => handleOpen(item, index)}
               >
-                {item.rootPath[0]} ....
-                {item.rootPath[3] ? item.rootPath[3] : item.rootPath[2]}
+                {catFR[item.rootPath[0].toLowerCase()] || item.rootPath[0]} ....
+                {item.rootPath[3] ? catFR[item.rootPath[3].toLowerCase()] || item.rootPath[3] : catFR[item.rootPath[2].toLowerCase()] || item.rootPath[2]}
               </Button>
             ) : null
           )}
@@ -266,10 +267,10 @@ console.log(finalData)
                         marginBottom: "1em",
                       }}
                     >
-                      New Path
+                     Nouvelle voie
                     </Typography>
                     <Typography style={{ textTransform: "capitalize" }}>
-                      {rootPath}
+                      {JSON.stringify(JSON.parse(rootPath)?.map(name => ` ${catFR[name.toLowerCase()]} `))}
                     </Typography>
                   </div>
 
@@ -287,7 +288,7 @@ console.log(finalData)
                         marginTop: "2em",
                       }}
                     >
-                      Items
+                      Article
                     </Typography>
                     <ol>
                       {mappedArticles?.map((item, index) => (
@@ -318,7 +319,7 @@ console.log(finalData)
                         marginTop: "2em",
                       }}
                     >
-                      Criteria
+                      Critère
                     </Typography>
                     <ol>
                       {criteria?.map((item, index) => (
@@ -353,7 +354,7 @@ console.log(finalData)
                       }}
                       onClick={handleDeleteMapping}
                     >
-                      Delete
+                      Supprimer
                     </Button>
                   </div>
                 </div>
@@ -404,7 +405,7 @@ console.log(finalData)
           }}
         >
           {mapToSend?.length ? <Button variant="contained" onClick={handleSend}>
-            Send
+          Envoyer
           </Button> : null}
         </div>
       </div>

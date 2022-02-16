@@ -111,7 +111,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
           backgroundColor: '#fff',
         }}
       >
-        Old Collections
+        Ancienne Collection
       </div>
       <div>
         <FormControl style={{ width: "85%", marginBottom: "1em", backgroundColor: '#fff', }}>
@@ -149,7 +149,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
           null) : (
           <FormControl style={{ width: "85%", marginBottom: "1em", backgroundColor: '#fff', }}>
             <InputLabel id="demo-simple-select-label">
-              Sub Collections
+            sous Collections
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
