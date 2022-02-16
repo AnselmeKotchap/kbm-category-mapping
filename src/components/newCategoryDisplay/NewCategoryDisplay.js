@@ -57,12 +57,9 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
   const handleMap = () => {
     if (rootPath.length === collection.level && checkedItems?.length) {
       
-      const foundValue = category.map(item => {
-        item.rootPath?.push(item.name)
-        return item
-      }).find(item => JSON.stringify(item.rootPath.map(a => a?.trim().toLocaleLowerCase())) === JSON.stringify(rootPath.map(a => a?.trim().toLocaleLowerCase()))
-        
-      )
+      const foundValue = category.find(item => {
+        return JSON.stringify([...item.rootPath, item.name].map(a => a?.trim().toLowerCase())) === JSON.stringify(rootPath.map(a => a?.trim().toLowerCase()))
+      })
 
       if (!foundValue) {
         alert("Not a correct rootpath combination")
@@ -71,10 +68,12 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
 
       const criteria = foundValue.criteria.map(item => ({ ...item, value: '' }));
       
-      handleMapResult(rootPath, criteria);
+      handleMapResult(rootPath, criteria, foundValue.name);
     } else alert("Make Sure all categories and subcategories are selected");
 
   };
+
+  console.log('%cNewCategoryDisplay.js line:76 collection?.level === rootPath.length', 'color: #007acc;', collection?.level , rootPath.length);
 
   return (
     <div
@@ -142,7 +141,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
               }}
             >
               {catergoryData.map((item, index) =>
-                item.rootPath[0]?.trim().toLocaleLowerCase() === collection.name?.trim().toLocaleLowerCase() &&
+                item.rootPath[0]?.trim().toLowerCase() === collection.name?.trim().toLowerCase() &&
                 item.rootPath.length === 1 ? (
                   <MenuItem
                     key={index}
@@ -176,8 +175,8 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
               }}
             >
               {catergoryData.map((item, index) =>
-                item.rootPath[0]?.trim().toLocaleLowerCase() === collection.name?.trim().toLocaleLowerCase() &&
-                item.rootPath[1]?.trim().toLocaleLowerCase() === subCollection.name?.trim().toLocaleLowerCase() &&
+                item.rootPath[0]?.trim().toLowerCase() === collection.name?.trim().toLowerCase() &&
+                item.rootPath[1]?.trim().toLowerCase() === subCollection.name?.trim().toLowerCase() &&
                 item.rootPath.length === 2 ? (
                   <MenuItem
                     key={index}
@@ -212,9 +211,9 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
               }}
             >
                 {catergoryData.map((item, index) =>
-                item.rootPath[0]?.trim().toLocaleLowerCase() === collection.name?.trim().toLocaleLowerCase() &&
-                item.rootPath[1]?.trim().toLocaleLowerCase() === subCollection.name?.trim().toLocaleLowerCase() &&
-                item.rootPath[2]?.trim().toLocaleLowerCase() === secondSubCollection.name?.trim().toLocaleLowerCase() &&
+                item.rootPath[0]?.trim().toLowerCase() === collection.name?.trim().toLowerCase() &&
+                item.rootPath[1]?.trim().toLowerCase() === subCollection.name?.trim().toLowerCase() &&
+                item.rootPath[2]?.trim().toLowerCase() === secondSubCollection.name?.trim().toLowerCase() &&
                 item.rootPath.length === 3 ? (
                   <MenuItem
                     key={index}
@@ -249,7 +248,7 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
               }}
             >
               {catergoryData.map((item, index) =>
-                item.rootPath[3]?.trim().toLocaleLowerCase() === thirdSubCollection.name?.trim().toLocaleLowerCase() &&
+                item.rootPath[3]?.trim().toLowerCase() === thirdSubCollection.name?.trim().toLowerCase() &&
                 item.rootPath.length === 3 ? (
                   <MenuItem
                     key={index}

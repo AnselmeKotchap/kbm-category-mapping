@@ -40,10 +40,10 @@ function App(props) {
   const agent_name = localStorage.getItem("agentName");
   const username = localStorage.getItem("username");
 
-  const handleMapResult = (rootpath, criterias) => {
+  const handleMapResult = (rootpath, criterias, name) => {
     const mapping = {
       articleIds: checkedItems,
-      rootPath: rootpath,
+      rootPath: [...rootpath, name],
       criterias
     };
 
