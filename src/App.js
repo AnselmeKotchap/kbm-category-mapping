@@ -23,7 +23,6 @@ const style = {
   height: "70vh",
   width: "30vw",
   borderRadius: "1%",
-  borderBottomRightRadius: "15%",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-around",
@@ -49,18 +48,14 @@ function App(props) {
 
   const handleDeleteMapping = async () => {
     const deletedMap = mappings[mapIndex]?.articleIds;
-    console.log(deletedMap);
     const result = allArticles.filter((item) => deletedMap?.includes(item.id));
-    console.log(result);
     await localForage.setItem("mappingArticles", [
       ...mappingArticles,
       ...result,
     ]);
     setMappingArticles((previous) => [...previous, ...result]);
-    console.log(mappingArticles);
     setMapToSend((prev) => {
       prev.splice(mapIndex, 1);
-      console.log(prev);
       localForage.setItem("mappings", prev).then(() => {
         const result = allArticles.filter((item) =>
           prev.articleIds?.includes(item.id)
@@ -80,13 +75,17 @@ function App(props) {
   };
 
   const handleDeleteItemInMapping = async (item, index) => {
-    alert(`Deleting ${item.name} from Mapping`);
-    // setItemIDs(itemIDs.splice(itemIDs.indexOf(item.id), 1));
-    // let updatedMappings = await localForage.getItem('mappings')
-    let result = mapToSend.filter((i) => i.articleIds.includes(item.id));
-    console.log(JSON.stringify(item.id));
-    console.log(result);
-    console.log(mapToSend);
+    setMappings((prev) => {
+      const remainsArticles = mappedArticles.filter((i) => i.id !== item.id);
+      const remains = remainsArticles.map((i) => i.id);
+      prev[mapIndex].articleIds = remains;
+      setMappedArticles(remainsArticles);
+
+      alert(`Deleted ${item.name} from Mapping`);
+      localForage.setItem("mappings", prev).then(() => {});
+
+      return prev;
+    });
   };
 
   const handleMapResult = async (rootpath, criterias) => {
@@ -103,16 +102,11 @@ function App(props) {
       if (value) {
         let mappedItem = value;
         mappedItem.articleIds = [...mappedItem.articleIds, ...checkedItems];
-        console.log(mappedItem);
         localForage.setItem("mappings", prev).then(() => {
           alert("Article ajouté avec succès");
         });
-        localForage.setItem("articleIds", checkedItems).then(() => {
-          // console.log(checkedItems);
-        });
-        localForage.setItem("rootPath", rootpath).then(() => {
-          // console.log(rootpath);
-        });
+        localForage.setItem("articleIds", checkedItems).then(() => {});
+        localForage.setItem("rootPath", rootpath).then(() => {});
         return prev;
       } else {
         const map = [...prev, mapping];
@@ -120,12 +114,8 @@ function App(props) {
         localForage.setItem("mappings", map).then(() => {
           alert("Mapping des catégories achevée");
         });
-        localForage.setItem("articleIds", checkedItems).then(() => {
-          // console.log(checkedItems);
-        });
-        localForage.setItem("rootPath", rootpath).then(() => {
-          // console.log(rootpath);
-        });
+        localForage.setItem("articleIds", checkedItems).then(() => {});
+        localForage.setItem("rootPath", rootpath).then(() => {});
         return map;
       }
     });
@@ -152,7 +142,6 @@ function App(props) {
       getDataOnLoad();
     }
   }, [mappings]);
-  // console.log(mappings);
 
   return (
     <div className="App">

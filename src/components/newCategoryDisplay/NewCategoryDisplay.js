@@ -77,13 +77,6 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
     } else alert("Make Sure all categories and subcategories are selected");
   };
 
-  console.log(
-    "%cNewCategoryDisplay.js line:76 collection?.level === rootPath.length",
-    "color: #007acc;",
-    collection?.level,
-    rootPath.length
-  );
-
   return (
     <div
       style={{
@@ -93,7 +86,6 @@ const NewCategoryDisplay = ({ handleMapResult, checkedItems }) => {
         minHeight: "400px",
         border: "1px solid grey",
         borderRadius: "1%",
-        borderBottomRightRadius: "15%",
         // marginTop: "1em",
       }}
     >

@@ -76,7 +76,6 @@ const CategoryDisplay = ({
   useEffect(() => {
     localForage.getItem("collections", function (err, value) {
       setAllCollections(value);
-      console.log(err, "sasdfaskdflasdklk", value);
     });
   }, []);
 
@@ -100,7 +99,6 @@ const CategoryDisplay = ({
         border: "1px solid grey",
         backgroundColor: "#00000010",
         borderRadius: "1%",
-        borderBottomRightRadius: "15%",
         // marginTop: "1em",
       }}
     >

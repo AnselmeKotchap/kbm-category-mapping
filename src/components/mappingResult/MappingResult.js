@@ -21,7 +21,6 @@ const style = {
   height: "70vh",
   width: "30vw",
   borderRadius: "1%",
-  borderBottomRightRadius: "15%",
   display: "flex",
   flexDirection: "column",
   overflowY: "scroll",
@@ -118,7 +117,6 @@ function MappingResult({
       });
     }
   }, [mappings]);
-  console.log(finalData);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -150,9 +148,7 @@ function MappingResult({
             if (response.status === 200) {
               localForage
                 .setItem("articles", response.data.articles)
-                .then(() => {
-                  // console.log("Articles have been Saved");
-                });
+                .then(() => {});
               localForage
                 .setItem("collections", response.data.collections)
                 .then(() => {});
@@ -169,7 +165,6 @@ function MappingResult({
         }
       } else {
         alert("Data is empty");
-        console.log(finalData);
         setOpenSend(false);
       }
     } catch (err) {
@@ -189,7 +184,6 @@ function MappingResult({
         minHeight: "400px",
         border: "1px solid grey",
         borderRadius: "1%",
-        borderBottomRightRadius: "15%",
         marginLeft: "2em",
         // marginTop: "1em",
       }}
@@ -349,9 +343,6 @@ function MappingResult({
                                   handleDeleteItemInMapping(item, index);
                                 }
                               }}
-                              // onClick={() =>
-                              //   handleDeleteItemInMapping(item, index)
-                              // }
                             />
                           </div>
                         </li>
