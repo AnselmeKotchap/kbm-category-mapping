@@ -36,21 +36,87 @@ function App(props) {
   const handleClose = () => setOpen(false);
   const [checkedItems, setCheckedItems] = useState([]);
   const [mappings, setMappings] = useState([]);
+  const [mappingArticles, setMappingArticles] = useState([]);
+  const [allArticles, setAllArticles] = useState([]);
+  const [mappedArticles, setMappedArticles] = useState([]);
+  const [mapIndex, setMapIndex] = useState(null);
+  const [mapToSend, setMapToSend] = useState(mappings || []);
+  const [openMap, setOpenMap] = useState(false);
+  const [itemIDs, setItemIDs] = useState([]);
 
   const agent_name = localStorage.getItem("agentName");
   const username = localStorage.getItem("username");
 
-  const handleMapResult = (rootpath, criterias, name) => {
-    const mapping = {
-      articleIds: checkedItems,
-      rootPath: [...rootpath, name],
-      criterias
-    };
+  const handleDeleteMapping = async () => {
+    const deletedMap = mappings[mapIndex]?.articleIds;
+    console.log(deletedMap);
+    const result = allArticles.filter((item) => deletedMap?.includes(item.id));
+    console.log(result);
+    await localForage.setItem("mappingArticles", [
+      ...mappingArticles,
+      ...result,
+    ]);
+    setMappingArticles((previous) => [...previous, ...result]);
+    console.log(mappingArticles);
+    setMapToSend((prev) => {
+      prev.splice(mapIndex, 1);
+      console.log(prev);
+      localForage.setItem("mappings", prev).then(() => {
+        const result = allArticles.filter((item) =>
+          prev.articleIds?.includes(item.id)
+        );
 
+        setMappedArticles(result);
+        setOpenMap(false);
+
+        alert("Articles has been removed");
+      });
+      return [...prev];
+    });
+
+    setOpenMap(false);
+
+    return [mapToSend, mappingArticles];
+  };
+
+  const handleDeleteItemInMapping = async (item, index) => {
+    alert(`Deleting ${item.name} from Mapping`);
+    // setItemIDs(itemIDs.splice(itemIDs.indexOf(item.id), 1));
+    // let updatedMappings = await localForage.getItem('mappings')
+    let result = mapToSend.filter((i) => i.articleIds.includes(item.id));
+    console.log(JSON.stringify(item.id));
+    console.log(result);
+    console.log(mapToSend);
+  };
+
+  const handleMapResult = async (rootpath, criterias) => {
     setMappings((prev) => {
-      const map = [...prev, mapping];
+      const mapping = {
+        articleIds: checkedItems,
+        rootPath: [...rootpath],
+        criterias,
+      };
+      let value = prev.find(
+        (item) =>
+          JSON.stringify(item.rootPath) === JSON.stringify(mapping.rootPath)
+      );
+      if (value) {
+        let mappedItem = value;
+        mappedItem.articleIds = [...mappedItem.articleIds, ...checkedItems];
+        console.log(mappedItem);
+        localForage.setItem("mappings", prev).then(() => {
+          alert("Article ajouté avec succès");
+        });
+        localForage.setItem("articleIds", checkedItems).then(() => {
+          // console.log(checkedItems);
+        });
+        localForage.setItem("rootPath", rootpath).then(() => {
+          // console.log(rootpath);
+        });
+        return prev;
+      } else {
+        const map = [...prev, mapping];
 
-      if (map.length) {
         localForage.setItem("mappings", map).then(() => {
           alert("Mapping des catégories achevée");
         });
@@ -60,13 +126,22 @@ function App(props) {
         localForage.setItem("rootPath", rootpath).then(() => {
           // console.log(rootpath);
         });
+        return map;
       }
-      return map;
     });
+    const result = mappingArticles.filter(
+      (item) => !checkedItems.includes(item.id)
+    );
+    setCheckedItems([]);
+    await localForage.setItem("mappingArticles", result);
+    setMappingArticles(result);
   };
 
   const getDataOnLoad = async () => {
     const map = await localForage.getItem("mappings");
+    setAllArticles(await localForage.getItem("articles"));
+
+    setMappingArticles(await localForage.getItem("mappingArticles"));
     if (map?.length) {
       setMappings(map);
     }
@@ -75,7 +150,7 @@ function App(props) {
   React.useEffect(() => {
     if (!mappings?.length) {
       getDataOnLoad();
-    } 
+    }
   }, [mappings]);
   // console.log(mappings);
 
@@ -153,17 +228,41 @@ function App(props) {
           <CategoryDisplay
             checkedItems={checkedItems}
             setCheckedItems={setCheckedItems}
+            mappingArticles={mappingArticles}
+            setMappingArticles={setMappingArticles}
+            allArticles={allArticles}
+            setAllArticles={setAllArticles}
           />
         </div>
         <div>
-          <NewCategoryDisplay handleMapResult={handleMapResult} checkedItems={checkedItems}/>
+          <NewCategoryDisplay
+            handleMapResult={handleMapResult}
+            checkedItems={checkedItems}
+          />
         </div>
         <div
           style={{
             marginLeft: "7vw",
           }}
         >
-          <MappingResult mappings={mappings} setMappings={setMappings} />
+          <MappingResult
+            mappings={mappings}
+            setMappings={setMappings}
+            handleDeleteItemInMapping={handleDeleteItemInMapping}
+            mappedArticles={mappedArticles}
+            setMappedArticles={setMappedArticles}
+            mappingArticles={mappingArticles}
+            setMappingArticles={setMappingArticles}
+            handleDeleteMapping={handleDeleteMapping}
+            mapIndex={mapIndex}
+            setMapIndex={setMapIndex}
+            mapToSend={mapToSend}
+            setMapToSend={setMapToSend}
+            openMap={openMap}
+            setOpenMap={setOpenMap}
+            itemIDs={itemIDs}
+            setItemIDs={setItemIDs}
+          />
         </div>
       </div>
       <div>

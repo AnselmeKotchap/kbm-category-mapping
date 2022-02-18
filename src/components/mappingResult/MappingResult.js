@@ -6,6 +6,7 @@ import { Box } from "@mui/system";
 import kbm from "../../kbm.svg";
 import loading from "../../Loading_Animation.gif";
 import { catFR } from "../../data/catFR";
+import { DeleteForever } from "@mui/icons-material";
 
 const style = {
   position: "absolute",
@@ -27,55 +28,57 @@ const style = {
   direction: "rtl",
 };
 
-function MappingResult({ mappings, setMappings }) {
-  const [mapToSend, setMapToSend] = useState(mappings || []);
+function MappingResult({
+  mappings,
+  setMappings,
+  handleDeleteItemInMapping,
+  mappedArticles,
+  setMappedArticles,
+  mappingArticles,
+  setMappingArticles,
+  handleDeleteMapping,
+  mapIndex,
+  setMapIndex,
+  mapToSend,
+  setMapToSend,
+  openMap,
+  setOpenMap,
+  itemIDs,
+  setItemIDs,
+}) {
+  const [hover, setHover] = useState(false);
+
   const [, setUsername] = useState("");
   const [, setAgentName] = useState("");
   const [finalData, setFinalData] = useState({});
   const [allArticles, setAllArticles] = useState([]);
-  const [articleID, setArticleID] = useState([]);
-  const [mappedArticles, setMappedArticles] = useState([]);
-  const [rootPath, setRootPath] = useState('[]');
-  const [mapIndex, setMapIndex] = useState(null);
+  const [rootPath, setRootPath] = useState("[]");
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const [criteria, setCriteria] = useState([])
+  const [criteria, setCriteria] = useState([]);
 
-  const [open, setOpen] = useState(false);
   const [openSend, setOpenSend] = useState(false);
   const LOGIN_URL =
     "https://3fm2fdckrl.execute-api.us-east-2.amazonaws.com/collection_mapping";
 
   const handleOpen = (item, index) => {
     const aIDs = item.articleIds;
-    setArticleID(aIDs);
-    setCriteria(item.criterias?.map(item => item.name))
+    setItemIDs(aIDs);
+    setCriteria(item.criterias?.map((item) => item.name));
     allArticles?.forEach((i) => {
       if (aIDs.includes(i.id)) {
-        setMappedArticles((prev) => [...prev, i.name]);
+        setMappedArticles((prev) => [...prev, i]);
       }
     });
     setRootPath(JSON.stringify(item.rootPath));
-    setOpen(true);
+    setOpenMap(true);
     setMapIndex(index);
+
     // return mappedArticles, rootPath, mapIndex;
   };
   const handleClose = () => {
-    setOpen(false);
+    setOpenMap(false);
     setMappedArticles([]);
-  };
-
-  const handleDeleteMapping = () => {
-    setMapToSend((prev) => {
-      prev.splice(mapIndex, 1);
-      localForage.setItem("mappings", prev).then(() => {
-        alert("Articles has been removed");
-      });
-      return [...prev];
-    });
-
-    handleClose();
-
-    return mapToSend;
   };
 
   const getDataOnLoad = async () => {
@@ -98,9 +101,9 @@ function MappingResult({ mappings, setMappings }) {
       setAllArticles(articles);
     }
   };
-// initialize mapping to usestate on load
+  // initialize mapping to usestate on load
   useEffect(() => {
-    if (!mappings?.length) { 
+    if (!mappings?.length) {
       getDataOnLoad();
     } else {
       const un = localStorage.getItem("username");
@@ -115,7 +118,7 @@ function MappingResult({ mappings, setMappings }) {
       });
     }
   }, [mappings]);
-console.log(finalData)
+  console.log(finalData);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -206,27 +209,50 @@ console.log(finalData)
         <div>
           {mapToSend?.map((item, index) =>
             Object.keys(item)?.length ? (
-              <Button
+              <div
                 key={index}
-                variant="outlined"
                 style={{
-                  color: "green",
-                  textTransform: "capitalize",
+                  display: "flex",
+                  width: "100%",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-around",
                   marginBottom: "1em",
-                  width: "90%",
                 }}
-                onClick={() => handleOpen(item, index)}
               >
-                {catFR[item.rootPath[0].toLowerCase()] || item.rootPath[0]} ....
-                {item.rootPath[3] ? catFR[item.rootPath[3].toLowerCase()] || item.rootPath[3] : catFR[item.rootPath[2].toLowerCase()] || item.rootPath[2]}
-              </Button>
+                <Button
+                  key={index}
+                  variant="outlined"
+                  style={{
+                    color: "green",
+                    textTransform: "capitalize",
+                    width: "85%",
+                  }}
+                  onClick={() => handleOpen(item, index)}
+                >
+                  {catFR[item.rootPath[0].toLowerCase()] || item.rootPath[0]}{" "}
+                  ....
+                  {item.rootPath[3]
+                    ? catFR[item.rootPath[3].toLowerCase()] || item.rootPath[3]
+                    : catFR[item.rootPath[2].toLowerCase()] || item.rootPath[2]}
+                </Button>
+                <DeleteForever
+                  onClick={handleDeleteMapping}
+                  style={{
+                    color: "red",
+                    cursor: "pointer",
+                    width: "35px",
+                    height: "35px",
+                  }}
+                />
+              </div>
             ) : null
           )}
         </div>
         <div>
           <div>
             <Modal
-              open={open}
+              open={openMap}
               onClose={handleClose}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
@@ -267,10 +293,14 @@ console.log(finalData)
                         marginBottom: "1em",
                       }}
                     >
-                     Nouvelle voie
+                      Nouvelle voie
                     </Typography>
                     <Typography style={{ textTransform: "capitalize" }}>
-                      {JSON.stringify(JSON.parse(rootPath)?.map(name => ` ${catFR[name.toLowerCase()]} `))}
+                      {JSON.stringify(
+                        JSON.parse(rootPath)?.map(
+                          (name) => ` ${catFR[name.toLowerCase()]} `
+                        )
+                      )}
                     </Typography>
                   </div>
 
@@ -299,7 +329,31 @@ console.log(finalData)
                             marginBottom: "1em",
                           }}
                         >
-                          {item}
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              paddingBottom: "10px",
+                              borderBottom: "0.5px dotted lightgrey",
+                            }}
+                          >
+                            {item.name}
+                            <DeleteForever
+                              style={{ color: "red", cursor: "pointer" }}
+                              onClick={() => {
+                                if (mappedArticles?.length === 1) {
+                                  handleDeleteMapping();
+                                } else {
+                                  handleDeleteItemInMapping(item, index);
+                                }
+                              }}
+                              // onClick={() =>
+                              //   handleDeleteItemInMapping(item, index)
+                              // }
+                            />
+                          </div>
                         </li>
                       ))}
                     </ol>
@@ -404,9 +458,11 @@ console.log(finalData)
             marginTop: "3em",
           }}
         >
-          {mapToSend?.length ? <Button variant="contained" onClick={handleSend}>
-          Envoyer
-          </Button> : null}
+          {mapToSend?.length ? (
+            <Button variant="contained" onClick={handleSend}>
+              Envoyer
+            </Button>
+          ) : null}
         </div>
       </div>
     </div>

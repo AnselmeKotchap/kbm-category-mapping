@@ -57,13 +57,14 @@ export default function Login() {
           // headers: { "Content-Type": "application/json", mode: "cors" },
         }
       );
-      console.log(response, 'response from server');
+      console.log(response, "response from server");
       if (response.status === 200) {
         await localStorage.setItem("Auth", true);
         await localStorage.setItem("username", username);
         await localStorage.setItem("agentName", agent_name);
-        await localForage.setItem("articles", response.data.articles)
-        await localForage.setItem("collections", response.data.collections)
+        await localForage.setItem("articles", response.data.articles);
+        await localForage.setItem("mappingArticles", response.data.articles);
+        await localForage.setItem("collections", response.data.collections);
         window.location.reload();
       }
     } catch (err) {

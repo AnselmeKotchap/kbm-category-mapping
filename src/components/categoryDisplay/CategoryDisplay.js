@@ -13,10 +13,17 @@ import {
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
 
-const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
+const CategoryDisplay = ({
+  checkedItems,
+  setCheckedItems,
+  mappingArticles,
+  setMappingArticles,
+  allArticles,
+  setAllArticles,
+}) => {
   const [collection, setCollection] = useState({});
   const [subCollection, setSubCollection] = useState({});
-  const [allArticles, setAllArticles] = useState([]);
+
   const [allCollections, setAllCollections] = useState([]);
   const [results, setResults] = useState([]);
 
@@ -33,7 +40,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
 
   const handleSearch = (e) => {
     let name = e.target.value;
-    const result = allArticles?.filter((item, index) =>
+    const result = mappingArticles?.filter((item, index) =>
       item.name.includes(name)
     );
     setResults(result);
@@ -67,24 +74,20 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
 
   // Get Items
   useEffect(() => {
-    localForage.getItem("articles", function (err, value) {
-      setAllArticles(value);
-      console.log(err, 'lakjlkasjdksd', value);
-    });
     localForage.getItem("collections", function (err, value) {
       setAllCollections(value);
-      console.log(err, 'sasdfaskdflasdklk', value);
+      console.log(err, "sasdfaskdflasdklk", value);
     });
   }, []);
 
   const handleCollectionChange = (event) => {
     setCollection(event.target.value);
-    setSubCollection({})
-    setCheckedItems([])
+    setSubCollection({});
+    setCheckedItems([]);
   };
   const handleSubCollectionChange = (event) => {
     setSubCollection(event.target.value);
-    setCheckedItems([])
+    setCheckedItems([]);
   };
 
   return (
@@ -95,7 +98,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
         height: "80vh",
         minHeight: "400px",
         border: "1px solid grey",
-        backgroundColor: '#00000010',
+        backgroundColor: "#00000010",
         borderRadius: "1%",
         borderBottomRightRadius: "15%",
         // marginTop: "1em",
@@ -108,13 +111,15 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
           padding: "10px",
           fontWeight: "700",
           marginBottom: "1em",
-          backgroundColor: '#fff',
+          backgroundColor: "#fff",
         }}
       >
         Ancienne Collection
       </div>
       <div>
-        <FormControl style={{ width: "85%", marginBottom: "1em", backgroundColor: '#fff', }}>
+        <FormControl
+          style={{ width: "85%", marginBottom: "1em", backgroundColor: "#fff" }}
+        >
           <InputLabel id="demo-simple-select-label">Collections</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -126,7 +131,8 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
               textTransform: "capitalize",
             }}
           >
-            {!allCollections?.length? null
+            {!allCollections?.length
+              ? null
               : allCollections?.map((item, index) => {
                   if (item?.type === "collection") {
                     return (
@@ -145,11 +151,16 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                 })}
           </Select>
         </FormControl>
-        {Object.keys(collection)?.length === 0 ? (
-          null) : (
-          <FormControl style={{ width: "85%", marginBottom: "1em", backgroundColor: '#fff', }}>
+        {Object.keys(collection)?.length === 0 ? null : (
+          <FormControl
+            style={{
+              width: "85%",
+              marginBottom: "1em",
+              backgroundColor: "#fff",
+            }}
+          >
             <InputLabel id="demo-simple-select-label">
-            sous Collections
+              sous Collections
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -214,7 +225,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                 overflowX: "hidden",
                 overflowY: "scroll",
                 scrollBehavior: "smooth",
-                backgroundColor: '#fff',
+                backgroundColor: "#fff",
               }}
             >
               <TextField
@@ -230,7 +241,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                 variant="outlined"
                 style={{
                   width: "50vw",
-                  backgroundColor: '#fff',
+                  backgroundColor: "#fff",
                 }}
               />
               {results?.length
@@ -248,7 +259,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                             justifyContent: "flex-start",
                             height: "auto",
                             width: "100%",
-                            backgroundColor: '#fff',
+                            backgroundColor: "#fff",
                           }}
                           control={
                             <Checkbox
@@ -265,7 +276,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                     }
                     return null;
                   })
-                : allArticles?.map((item, index) => {
+                : mappingArticles?.map((item, index) => {
                     if (item.collectionID === subCollection?.id) {
                       return (
                         <FormControlLabel
@@ -279,7 +290,7 @@ const CategoryDisplay = ({ checkedItems, setCheckedItems }) => {
                             justifyContent: "flex-start",
                             height: "auto",
                             width: "100%",
-                            backgroundColor: '#fff',
+                            backgroundColor: "#fff",
                           }}
                           control={
                             <Checkbox
