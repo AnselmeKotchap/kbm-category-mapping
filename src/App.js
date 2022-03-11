@@ -42,6 +42,7 @@ function App(props) {
   const [mapToSend, setMapToSend] = useState(mappings || []);
   const [openMap, setOpenMap] = useState(false);
   const [itemIDs, setItemIDs] = useState([]);
+  const [files, setFiles] = useState([]);
 
   const agent_name = localStorage.getItem("agentName");
   const username = localStorage.getItem("username");
@@ -84,6 +85,10 @@ function App(props) {
       alert(`Deleted ${item.name} from Mapping`);
       localForage.setItem("mappings", prev).then(() => {});
 
+      const toDelete = mappedArticles.filter((i) => i.id === item.id);
+      console.log(toDelete);
+      mappingArticles.concat(toDelete);
+
       return prev;
     });
   };
@@ -94,6 +99,7 @@ function App(props) {
         articleIds: checkedItems,
         rootPath: [...rootpath],
         criterias,
+        images: files,
       };
       let value = prev.find(
         (item) =>
@@ -107,6 +113,8 @@ function App(props) {
         });
         localForage.setItem("articleIds", checkedItems).then(() => {});
         localForage.setItem("rootPath", rootpath).then(() => {});
+        localForage.setItem("images", files).then(() => {});
+
         return prev;
       } else {
         const map = [...prev, mapping];
@@ -221,6 +229,8 @@ function App(props) {
             setMappingArticles={setMappingArticles}
             allArticles={allArticles}
             setAllArticles={setAllArticles}
+            files={files}
+            setFiles={setFiles}
           />
         </div>
         <div>
@@ -251,6 +261,8 @@ function App(props) {
             setOpenMap={setOpenMap}
             itemIDs={itemIDs}
             setItemIDs={setItemIDs}
+            files={files}
+            setFiles={setFiles}
           />
         </div>
       </div>

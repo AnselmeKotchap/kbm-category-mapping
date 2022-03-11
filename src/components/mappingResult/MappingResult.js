@@ -6,7 +6,7 @@ import { Box } from "@mui/system";
 import kbm from "../../kbm.svg";
 import loading from "../../Loading_Animation.gif";
 import { catFR } from "../../data/catFR";
-import { DeleteForever } from "@mui/icons-material";
+import { Cancel } from "@mui/icons-material";
 
 const style = {
   position: "absolute",
@@ -220,7 +220,7 @@ function MappingResult({
                   style={{
                     color: "green",
                     textTransform: "capitalize",
-                    width: "85%",
+                    width: "90%",
                   }}
                   onClick={() => handleOpen(item, index)}
                 >
@@ -230,13 +230,13 @@ function MappingResult({
                     ? catFR[item.rootPath[3].toLowerCase()] || item.rootPath[3]
                     : catFR[item.rootPath[2].toLowerCase()] || item.rootPath[2]}
                 </Button>
-                <DeleteForever
+                <Cancel
                   onClick={handleDeleteMapping}
                   style={{
-                    color: "red",
+                    color: "#FF7171",
                     cursor: "pointer",
-                    width: "35px",
-                    height: "35px",
+                    width: "20px",
+                    height: "20px",
                   }}
                 />
               </div>
@@ -334,8 +334,8 @@ function MappingResult({
                             }}
                           >
                             {item.name}
-                            <DeleteForever
-                              style={{ color: "red", cursor: "pointer" }}
+                            <Cancel
+                              style={{ color: "#FF7171", cursor: "pointer" }}
                               onClick={() => {
                                 if (mappedArticles?.length === 1) {
                                   handleDeleteMapping();
